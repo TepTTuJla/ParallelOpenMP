@@ -5,11 +5,11 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 #define MATRIX_SIZE 1000
-#define STREAMS_COUNT 32
+#define STREAMS_COUNT 16
 
 using namespace std;
 
-void randomiseMatrix(float** matrix) { //Генерация случанйных чисел типа float с 0 до 1
+void randomiseMatrix(float** matrix) { //Генерация случайных чисел типа float с 0 до 1
     random_device rd;
     mt19937 gen(rd());
     uniform_real_distribution<float> dis(0.0f, 1.0f);
@@ -65,11 +65,12 @@ int main(int argc, char** argv) {
         }
     }
 
-    //Генерируем случайные числа матриц для умножения
+    //Генерирация случайных чисел матриц для умножения
     /*printf("Генерация матриц %d на %d\n", MATRIX_SIZE, MATRIX_SIZE);
     randomiseMatrix(matrix1);
     randomiseMatrix(matrix2);*/
 
+    //Считывание с файла матриц для умножения
     printf("Считывание с файла матриц %d на %d\n", MATRIX_SIZE, MATRIX_SIZE);
     readMatrixFromFile("matrix1.txt", matrix1);
     readMatrixFromFile("matrix2.txt", matrix2);
@@ -81,9 +82,9 @@ int main(int argc, char** argv) {
     //Замер начала перемножения матриц
     double start = omp_get_wtime();
 
-    //Распределяем цикл на потоки с помощью for
+    //Распределение цикла на потоки с помощью parallel for
     //Для всех потоков матрицы matrix1, matrix2 и result будут общими 
-    //Для каждого потока будут свои счётчики i, j, k (можно через private)
+    //Для каждого потока будут свои счётчики i, j, k (можно сделать через private)
 
 #pragma omp parallel for shared(matrix1, matrix2, result)
     for (int g = 0; g < 5; g++) { //Матрицы будут перемножаться 5 раз
